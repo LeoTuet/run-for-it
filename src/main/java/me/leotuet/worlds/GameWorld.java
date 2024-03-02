@@ -6,13 +6,12 @@ import me.leotuet.actors.GameMap;
 
 public class GameWorld extends World {
 
-	public GameWorld(GameMap map) {
-		super(map.getMapWidth(), map.getMapHeight(), 1);
-		this.addObject(map, 0, 0);
+	public GameWorld(GameMap map, Bean player) {
+		super(map.getMapWidth(), map.getMapHeight(), 1, false);
+		this.addObject(map, map.getMapWidth() / 2, map.getMapHeight() / 2);
 		map.render();
 
-		var bean = new Bean();
-		this.addObject(bean, getWidth() / 2, getHeight() / 2);
+		this.addObject(player, getWidth() / 2, getHeight() / 2);
 
 	}
 

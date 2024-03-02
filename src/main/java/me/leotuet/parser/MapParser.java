@@ -7,18 +7,15 @@ import java.nio.file.Paths;
 
 import org.json.JSONArray;
 
-import me.leotuet.actors.GameMap;
-
 public class MapParser {
 
 	public MapParser() {
 	}
 
-	public GameMap parseDefaultMap() throws IOException, URISyntaxException {
+	public JSONArray parseDefaultMap() throws IOException, URISyntaxException {
 		var url = MapParser.class.getClassLoader().getResource("maps/default.json");
 		var content = Files.readString(Paths.get(url.toURI())).trim();
-		var jsonArray = new JSONArray(content);
-		return new GameMap(jsonArray);
+		return new JSONArray(content);
 	}
 
 }

@@ -12,15 +12,34 @@ public class GameMap extends Actor {
 	private static final int VIEWPORT_BLOCK_HEIGHT = 9;
 
 	private JSONArray mapArray;
+	private Bean player;
 	private ArrayList<Block[]> map;
 
-	public GameMap(JSONArray mapArray) {
+	public GameMap(JSONArray mapArray, Bean player) {
 		this.mapArray = mapArray;
+		this.player = player;
+		this.getImage().scale(getMapWidth(), getMapHeight());
+	}
+
+	public void act() {
+		player.preventMove(Direction.NONE);
+
+		if (shouldMoveMapLeft() && player.isMovingLeft()) {
+			player.preventMove(Direction.LEFT);
+			moveMap(-player.getMovementSpeed());
+		}
+
+		if (shouldMoveMapRight() && player.isMovingRight()) {
+			player.preventMove(Direction.RIGHT);
+			moveMap(player.getMovementSpeed());
+		}
+
 	}
 
 	public void render() {
 		map = new ArrayList<Block[]>();
-		for (int columnIndex = 0; columnIndex < VIEWPORT_BLOCK_WIDTH; columnIndex++) {
+		// TODO: change to render method which only renders the blocks that are visible
+		for (int columnIndex = 0; columnIndex < this.mapArray.length(); columnIndex++) {
 			renderColumn(columnIndex);
 		}
 	}
@@ -53,6 +72,37 @@ public class GameMap extends Actor {
 
 	public int getMapWidth() {
 		return VIEWPORT_BLOCK_WIDTH * Block.BLOCK_SIZE;
+	}
+
+	public boolean shouldMoveMapRight() {
+		var block = getNonNullBlock(map.get(map.size() - 1));
+		var isOnEdge = block.getX() <= getMapWidth() - Block.BLOCK_SIZE / 2;
+		return player.getX() > getMapWidth() - 2 * Block.BLOCK_SIZE && !isOnEdge;
+	}
+
+	public boolean shouldMoveMapLeft() {
+		var block = getNonNullBlock(map.get(0));
+		var isOnEdge = block.getX() >= Block.BLOCK_SIZE / 2;
+		return player.getX() < Block.BLOCK_SIZE * 2 && !isOnEdge;
+	}
+
+	private Block getNonNullBlock(Block[] blocks) {
+		for (var block : blocks) {
+			if (block != null) {
+				return block;
+			}
+		}
+		return null;
+	}
+
+	private void moveMap(int direction) {
+		for (var column : map) {
+			for (var block : column) {
+				if (block != null) {
+					block.setLocation(block.getX() - direction, block.getY());
+				}
+			}
+		}
 	}
 
 }

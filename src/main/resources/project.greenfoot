@@ -2,6 +2,8 @@
 
 class.me.leotuet.actors.Bean.image=bean.png
 class.me.leotuet.actors.Block.image=grass-block.png
+class.me.leotuet.actors.GameMap.image=background.png
+
 
 # Editor Settings
 editor.fx.0.height=0
