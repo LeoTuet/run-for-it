@@ -1,6 +1,7 @@
 # Class definitions
 
 class.me.leotuet.actors.Bean.image=bean.png
+class.me.leotuet.actors.Block.image=grass-block.png
 
 # Editor Settings
 editor.fx.0.height=0
@@ -36,4 +37,4 @@ target1.y=0
 
 # Misc/Unknown
 version=3.0.0
-world.lastInstantiated=me.leotuet.worlds.MyWorld
+world.lastInstantiated=me.leotuet.worlds.StartScreen
