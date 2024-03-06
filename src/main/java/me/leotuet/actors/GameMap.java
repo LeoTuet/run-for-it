@@ -33,7 +33,6 @@ public class GameMap extends Actor {
 			player.preventMove(Direction.RIGHT);
 			moveMap(player.getMovementSpeed());
 		}
-
 	}
 
 	public void render() {
@@ -63,7 +62,7 @@ public class GameMap extends Actor {
 	}
 
 	private int getWorldPlacement(int index) {
-		return index * Block.BLOCK_SIZE + Block.BLOCK_SIZE / 2;
+		return index * Block.BLOCK_SIZE + Block.HALF_BLOCK_SIZE;
 	}
 
 	public int getMapHeight() {
@@ -76,13 +75,13 @@ public class GameMap extends Actor {
 
 	public boolean shouldMoveMapRight() {
 		var block = getNonNullBlock(map.get(map.size() - 1));
-		var isOnEdge = block.getX() <= getMapWidth() - Block.BLOCK_SIZE / 2;
+		var isOnEdge = block.getX() <= getMapWidth() - Block.HALF_BLOCK_SIZE;
 		return player.getX() > getMapWidth() - 2 * Block.BLOCK_SIZE && !isOnEdge;
 	}
 
 	public boolean shouldMoveMapLeft() {
 		var block = getNonNullBlock(map.get(0));
-		var isOnEdge = block.getX() >= Block.BLOCK_SIZE / 2;
+		var isOnEdge = block.getX() >= Block.HALF_BLOCK_SIZE;
 		return player.getX() < Block.BLOCK_SIZE * 2 && !isOnEdge;
 	}
 

@@ -4,7 +4,7 @@ import greenfoot.Greenfoot;
 import greenfoot.World;
 import me.leotuet.actors.Bean;
 import me.leotuet.actors.GameMap;
-import me.leotuet.parser.MapParser;
+import me.leotuet.utils.MapParser;
 
 public class StartScreen extends World {
 

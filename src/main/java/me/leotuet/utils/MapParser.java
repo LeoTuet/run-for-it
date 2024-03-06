@@ -1,4 +1,4 @@
-package me.leotuet.parser;
+package me.leotuet.utils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

@@ -1,19 +1,22 @@
 package me.leotuet.actors;
 
-import greenfoot.Actor;
 import greenfoot.Greenfoot;
+import me.leotuet.utils.BoundingActor;
+import me.leotuet.utils.BoundingOptions;
 
 enum Direction {
 	LEFT, RIGHT, NONE, UP, DOWN
 }
 
-public class Bean extends Actor {
+public class Bean extends BoundingActor {
 
+	public static final int PLAYER_SIZE = 128;
 	private int movementSpeed = 4;
 	private Direction preventMovement = Direction.NONE;
 
 	public Bean() {
-		this.getImage().scale(64, 64);
+		super(PLAYER_SIZE);
+		this.getImage().scale(PLAYER_SIZE, PLAYER_SIZE);
 	}
 
 	public void act() {
@@ -22,21 +25,25 @@ public class Bean extends Actor {
 
 	public void move() {
 		if (isMovingUp()) {
-			this.setLocation(getX(), getY() - movementSpeed * 2);
+			if (!this.isTouchingBlock(BoundingOptions.TOP) && preventMovement != Direction.UP) {
+				this.setLocation(getX(), getY() - movementSpeed * 2);
+			}
 		}
 
-		if (!isTouchingBlock()) {
-			this.setLocation(getX(), getY() + movementSpeed);
+		if (isMovingDown()) {
+			if (!this.isTouchingBlock(BoundingOptions.BOTTOM)) {
+				this.setLocation(getX(), getY() + movementSpeed);
+			}
 		}
 
 		if (isMovingRight()) {
-			if (preventMovement != Direction.RIGHT) {
+			if (!this.isTouchingBlock(BoundingOptions.RIGHT) && preventMovement != Direction.RIGHT) {
 				this.setLocation(getX() + movementSpeed, getY());
 			}
 		}
 
 		if (isMovingLeft()) {
-			if (preventMovement != Direction.LEFT) {
+			if (!this.isTouchingBlock(BoundingOptions.LEFT) && preventMovement != Direction.LEFT) {
 				this.setLocation(getX() - movementSpeed, getY());
 			}
 		}
@@ -54,16 +61,24 @@ public class Bean extends Actor {
 		return Greenfoot.isKeyDown("up") || Greenfoot.isKeyDown("w") || Greenfoot.isKeyDown("space");
 	}
 
-	// public boolean isMovingDown() {
-	// 	return Greenfoot.isKeyDown("down") || Greenfoot.isKeyDown("s");
-	// }
+	public boolean isMovingDown() {
+		return Greenfoot.isKeyDown("down") || Greenfoot.isKeyDown("s");
+	}
 
 	public void preventMove(Direction direction) {
 		this.preventMovement = direction;
 	}
 
-	public boolean isTouchingBlock() {
-		return this.isTouching(Block.class);
+	public static int getCenter() {
+		return PLAYER_SIZE / 2;
+	}
+
+	public boolean isTouchingBlock(BoundingOptions direction) {
+		if (this.isTouching(Block.class)) {
+			var block = (Block) this.getOneIntersectingObject(Block.class);
+			return this.isIntersecting(direction, block.getOppositeBounding(direction), movementSpeed);
+		}
+		return false;
 	}
 
 	public int getMovementSpeed() {
