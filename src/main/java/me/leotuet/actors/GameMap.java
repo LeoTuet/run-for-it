@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 
 import greenfoot.Actor;
+import me.leotuet.utils.Direction;
 
 public class GameMap extends Actor {
 

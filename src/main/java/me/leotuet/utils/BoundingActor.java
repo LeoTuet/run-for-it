@@ -17,60 +17,44 @@ public class BoundingActor extends Actor {
 		this.sizeY = sizeY;
 	}
 
-	public Location getBounding(BoundingOptions boundingOptions) {
-		switch (boundingOptions) {
-			case TOP:
-				return new Location(this.getX(), this.getY() - this.sizeY / 2);
-			case BOTTOM:
-				return new Location(this.getX(), this.getY() + this.sizeY / 2);
-			case LEFT:
-				return new Location(this.getX() - this.sizeX / 2, this.getY());
-			default:
-				return new Location(this.getX() + this.sizeX / 2, this.getY());
-		}
+	public Location getTopLeft() {
+		return new Location(this.getX() - this.getHalfSizeX(), this.getY() - this.getHalfSizeY());
 	}
 
-	public Location getOppositeBounding(BoundingOptions boundingOptions) {
-		switch (boundingOptions) {
-			case TOP:
-				boundingOptions = BoundingOptions.BOTTOM;
-				break;
-			case BOTTOM:
-				boundingOptions = BoundingOptions.TOP;
-				break;
-			case LEFT:
-				boundingOptions = BoundingOptions.RIGHT;
-				break;
-			case RIGHT:
-				boundingOptions = BoundingOptions.LEFT;
-				break;
-
-		}
-
-		return this.getBounding(boundingOptions);
+	public Location getTopRight() {
+		return new Location(this.getX() + this.getHalfSizeX(), this.getY() - this.getHalfSizeY());
 	}
 
-	// public boolean isIntersecting(BoundingBox boundingBox, Location location);
-	public boolean isIntersecting(BoundingOptions boundingBox, Location collisionLocation, int tolerance) {
-		var ownLocation = getBounding(boundingBox);
-		var isIntersectingY = ownLocation.y - tolerance <= collisionLocation.y
-				&& collisionLocation.y <= ownLocation.y + tolerance;
-		var isIntersectingX = ownLocation.x - tolerance <= collisionLocation.x
-				&& collisionLocation.x <= ownLocation.x + tolerance;
+	public Location getBottomLeft() {
+		return new Location(this.getX() - this.getHalfSizeX(), this.getY() + this.getHalfSizeY());
+	}
 
-		switch (boundingBox) {
-			case TOP, BOTTOM:
-				return isIntersectingY;
-			case LEFT, RIGHT:
-				return isIntersectingX;
-			default:
-				return false;
-		}
-
+	public Location getBottomRight() {
+		return new Location(this.getX() + this.getHalfSizeX(), this.getY() + this.getHalfSizeY());
 	}
 
 	public Location getLocation() {
 		return new Location(this.getX(), this.getY());
+	}
+
+	public <T extends BoundingActor> boolean isIntersecting(Direction direction, T collisionActor, int tolerance) {
+		switch (direction) {
+			case ABOVE:
+			case BELOW:
+			case LEFT:
+			case RIGHT:
+			case NONE:
+				return false; // This is a special case, as it is not possible to intersect with no direction
+		}
+		return false;
+	}
+
+	private int getHalfSizeX() {
+		return sizeX / 2;
+	}
+
+	private int getHalfSizeY() {
+		return sizeY / 2;
 	}
 
 }

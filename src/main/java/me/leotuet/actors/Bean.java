@@ -2,11 +2,7 @@ package me.leotuet.actors;
 
 import greenfoot.Greenfoot;
 import me.leotuet.utils.BoundingActor;
-import me.leotuet.utils.BoundingOptions;
-
-enum Direction {
-	LEFT, RIGHT, NONE, UP, DOWN
-}
+import me.leotuet.utils.Direction;
 
 public class Bean extends BoundingActor {
 
@@ -25,25 +21,25 @@ public class Bean extends BoundingActor {
 
 	public void move() {
 		if (isMovingUp()) {
-			if (!this.isTouchingBlock(BoundingOptions.TOP) && preventMovement != Direction.UP) {
+			if (!this.isTouchingBlock(Direction.ABOVE) && preventMovement != Direction.ABOVE) {
 				this.setLocation(getX(), getY() - movementSpeed * 2);
 			}
 		}
 
 		if (isMovingDown()) {
-			if (!this.isTouchingBlock(BoundingOptions.BOTTOM)) {
+			if (!this.isTouchingBlock(Direction.BELOW)) {
 				this.setLocation(getX(), getY() + movementSpeed);
 			}
 		}
 
 		if (isMovingRight()) {
-			if (!this.isTouchingBlock(BoundingOptions.RIGHT) && preventMovement != Direction.RIGHT) {
+			if (!this.isTouchingBlock(Direction.RIGHT) && preventMovement != Direction.RIGHT) {
 				this.setLocation(getX() + movementSpeed, getY());
 			}
 		}
 
 		if (isMovingLeft()) {
-			if (!this.isTouchingBlock(BoundingOptions.LEFT) && preventMovement != Direction.LEFT) {
+			if (!this.isTouchingBlock(Direction.LEFT) && preventMovement != Direction.LEFT) {
 				this.setLocation(getX() - movementSpeed, getY());
 			}
 		}
@@ -73,10 +69,10 @@ public class Bean extends BoundingActor {
 		return PLAYER_SIZE / 2;
 	}
 
-	public boolean isTouchingBlock(BoundingOptions direction) {
+	public boolean isTouchingBlock(Direction direction) {
 		if (this.isTouching(Block.class)) {
 			var block = (Block) this.getOneIntersectingObject(Block.class);
-			return this.isIntersecting(direction, block.getOppositeBounding(direction), movementSpeed);
+			return this.isIntersecting(direction, block, movementSpeed);
 		}
 		return false;
 	}
