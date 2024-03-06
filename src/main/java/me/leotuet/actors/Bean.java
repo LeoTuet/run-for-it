@@ -7,7 +7,7 @@ import me.leotuet.utils.Direction;
 public class Bean extends BoundingActor {
 
 	public static final int PLAYER_SIZE = 128;
-	private int movementSpeed = 4;
+	private int movementSpeed = 5;
 	private Direction preventMovement = Direction.NONE;
 
 	public Bean() {
@@ -22,7 +22,7 @@ public class Bean extends BoundingActor {
 	public void move() {
 		if (isMovingUp()) {
 			if (!this.isTouchingBlock(Direction.ABOVE) && preventMovement != Direction.ABOVE) {
-				this.setLocation(getX(), getY() - movementSpeed * 2);
+				this.setLocation(getX(), getY() - movementSpeed);
 			}
 		}
 
@@ -70,8 +70,8 @@ public class Bean extends BoundingActor {
 	}
 
 	public boolean isTouchingBlock(Direction direction) {
-		if (this.isTouching(Block.class)) {
-			var block = (Block) this.getOneIntersectingObject(Block.class);
+		var blocks = this.getObjectsInRange(PLAYER_SIZE, Block.class);
+		for (Block block : blocks) {
 			return this.isIntersecting(direction, block, movementSpeed);
 		}
 		return false;
