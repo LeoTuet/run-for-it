@@ -13,10 +13,10 @@ public class GameMap extends Actor {
 	private static final int VIEWPORT_BLOCK_HEIGHT = 9;
 
 	private JSONArray mapArray;
-	private Bean player;
+	private Player player;
 	private ArrayList<Block[]> map;
 
-	public GameMap(JSONArray mapArray, Bean player) {
+	public GameMap(JSONArray mapArray, Player player) {
 		this.mapArray = mapArray;
 		this.player = player;
 		this.getImage().scale(getMapWidth(), getMapHeight());

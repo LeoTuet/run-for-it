@@ -48,6 +48,7 @@ public class BoundingActor extends Actor {
 						&& this.getTop().y <= collisionActor.getBottom().y;
 
 				if (isAbove) {
+					// Connect to the bottom of the object
 					this.setLocation(this.getX(), collisionActor.getBottom().y + this.getHalfSizeY());
 				}
 
@@ -57,6 +58,7 @@ public class BoundingActor extends Actor {
 						&& this.getBottom().y <= collisionActor.getTop().y;
 
 				if (isBelow) {
+					// Connect to the top of the object
 					this.setLocation(this.getX(), collisionActor.getTop().y - this.getHalfSizeY());
 				}
 
@@ -67,6 +69,7 @@ public class BoundingActor extends Actor {
 						&& this.getLeft().x <= collisionActor.getRight().x;
 
 				if (isLeft) {
+					// Connect to the right of the object
 					this.setLocation(collisionActor.getRight().x + this.getHalfSizeX(), this.getY());
 				}
 
@@ -77,6 +80,7 @@ public class BoundingActor extends Actor {
 						&& this.getRight().x <= collisionActor.getLeft().x;
 
 				if (isRight) {
+					// Connect to the left of the object
 					this.setLocation(collisionActor.getLeft().x - this.getHalfSizeX(), this.getY());
 				}
 

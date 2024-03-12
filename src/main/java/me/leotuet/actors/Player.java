@@ -4,13 +4,13 @@ import greenfoot.Greenfoot;
 import me.leotuet.utils.BoundingActor;
 import me.leotuet.utils.Direction;
 
-public class Bean extends BoundingActor {
+public class Player extends BoundingActor {
 
 	public static final int PLAYER_SIZE = 128;
 	private int movementSpeed = 5;
 	private Direction preventMovement = Direction.NONE;
 
-	public Bean() {
+	public Player() {
 		super(PLAYER_SIZE);
 		this.getImage().scale(PLAYER_SIZE, PLAYER_SIZE);
 	}
