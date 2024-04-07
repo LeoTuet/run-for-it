@@ -37,65 +37,67 @@ public class BoundingActor extends Actor {
 		return new Location(this.getX(), this.getY());
 	}
 
-	public <T extends BoundingActor> boolean isIntersecting(Direction direction, T collisionActor, int tolerance) {
-		var isBetweenObject = (this.getTop().y <= collisionActor.getTop().y + tolerance
-				|| this.getBottom().y >= collisionActor.getBottom().y - tolerance);
+	public <T extends BoundingActor> boolean isIntersecting(Direction direction, int tolerance, Class<T> collisionActor) {
+		CrashActor crashActor = spawnCrashActor(direction, tolerance);
+		var intersectingActor = crashActor.getIntersecting(collisionActor);
+		boolean isIntersecting = intersectingActor != null;
+		crashActor.remove();
 
-		switch (direction) {
-
-			case ABOVE:
-				var isAbove = this.getTop().y >= collisionActor.getBottom().y - tolerance
-						&& this.getTop().y <= collisionActor.getBottom().y;
-
-				if (isAbove) {
-					// Connect to the bottom of the object
-					this.setLocation(this.getX(), collisionActor.getBottom().y + this.getHalfSizeY());
-				}
-
-				return isAbove;
-			case BELOW:
-				var isBelow = this.getBottom().y >= collisionActor.getTop().y - tolerance
-						&& this.getBottom().y <= collisionActor.getTop().y;
-
-				if (isBelow) {
-					// Connect to the top of the object
-					this.setLocation(this.getX(), collisionActor.getTop().y - this.getHalfSizeY());
-				}
-
-				return isBelow;
-			case LEFT:
-				var isLeft = isBetweenObject
-						&& this.getLeft().x >= collisionActor.getRight().x - tolerance
-						&& this.getLeft().x <= collisionActor.getRight().x;
-
-				if (isLeft) {
-					// Connect to the right of the object
-					this.setLocation(collisionActor.getRight().x + this.getHalfSizeX(), this.getY());
-				}
-
-				return isLeft;
-			case RIGHT:
-				var isRight = isBetweenObject
-						&& this.getRight().x >= collisionActor.getLeft().x - tolerance
-						&& this.getRight().x <= collisionActor.getLeft().x;
-
-				if (isRight) {
-					// Connect to the left of the object
-					this.setLocation(collisionActor.getLeft().x - this.getHalfSizeX(), this.getY());
-				}
-
-				return isRight;
-			case NONE:
-				return false; // This is a special case, as it is not possible to intersect with no direction
+		if (!isIntersecting) {
+			return isIntersecting;
 		}
-		return false;
+
+		// Prevents bugging into objects
+		if (direction == Direction.ABOVE) {
+			this.setLocation(this.getX(), intersectingActor.getBottom().y +
+					this.getHalfSizeY());
+		} else if (direction == Direction.BELOW) {
+			this.setLocation(this.getX(), intersectingActor.getTop().y -
+					this.getHalfSizeY());
+		}
+
+		return isIntersecting;
 	}
 
-	private int getHalfSizeX() {
+	private CrashActor spawnCrashActor(Direction direction, int tolerance) {
+		var world = this.getWorld();
+		CrashActor crashActor = new CrashActor();
+		int toleranceSize = tolerance;
+
+		if (toleranceSize <= 0) {
+			toleranceSize = tolerance * -1;
+		}
+
+		if (toleranceSize < 5) {
+			toleranceSize = 5;
+		}
+
+		switch (direction) {
+			case ABOVE:
+				crashActor.setSize(this.sizeX, toleranceSize);
+				world.addObject(crashActor, this.getX(), this.getTop().y + tolerance / 2);
+			case BELOW:
+				crashActor.setSize(this.sizeX, toleranceSize);
+				world.addObject(crashActor, this.getX(), this.getBottom().y - tolerance / 2);
+			case LEFT:
+				crashActor.setSize(toleranceSize, this.sizeY);
+				world.addObject(crashActor, this.getLeft().x + tolerance / 2, this.getY());
+			case RIGHT:
+				crashActor.setSize(toleranceSize, this.sizeY);
+				world.addObject(crashActor, this.getRight().x - tolerance / 2, this.getY());
+			default:
+				break;
+		}
+
+		return crashActor;
+
+	}
+
+	public int getHalfSizeX() {
 		return sizeX / 2;
 	}
 
-	private int getHalfSizeY() {
+	public int getHalfSizeY() {
 		return sizeY / 2;
 	}
 

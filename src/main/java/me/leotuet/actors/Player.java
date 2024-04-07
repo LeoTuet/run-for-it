@@ -7,8 +7,11 @@ import me.leotuet.utils.Direction;
 public class Player extends BoundingActor {
 
 	public static final int PLAYER_SIZE = 128;
-	private int movementSpeed = 5;
-	private Direction preventMovement = Direction.NONE;
+	private Direction mapMovement = Direction.NONE;
+	private int movementSpeed = 10;
+	private int gravityVelocity = 0;
+	private int jumpVelocity = 20;
+	private boolean isJumping = false;
 
 	public Player() {
 		super(PLAYER_SIZE);
@@ -17,31 +20,37 @@ public class Player extends BoundingActor {
 
 	public void act() {
 		move();
+		gravity();
 	}
 
 	public void move() {
 		if (isMovingUp()) {
-			if (!this.isTouchingBlock(Direction.ABOVE) && preventMovement != Direction.ABOVE) {
-				this.setLocation(getX(), getY() - movementSpeed);
-			}
-		}
-
-		if (isMovingDown()) {
-			if (!this.isTouchingBlock(Direction.BELOW)) {
-				this.setLocation(getX(), getY() + movementSpeed);
+			if (!isJumping) {
+				isJumping = true;
+				gravityVelocity = -jumpVelocity;
 			}
 		}
 
 		if (isMovingRight()) {
-			if (!this.isTouchingBlock(Direction.RIGHT) && preventMovement != Direction.RIGHT) {
+			if (isAllowedToMove(Direction.RIGHT) && mapMovement != Direction.RIGHT) {
 				this.setLocation(getX() + movementSpeed, getY());
 			}
 		}
 
 		if (isMovingLeft()) {
-			if (!this.isTouchingBlock(Direction.LEFT) && preventMovement != Direction.LEFT) {
+			if (isAllowedToMove(Direction.LEFT) && mapMovement != Direction.LEFT) {
 				this.setLocation(getX() - movementSpeed, getY());
 			}
+		}
+	}
+
+	public void gravity() {
+		if (this.isTouchingBlock(Direction.BELOW, gravityVelocity) && gravityVelocity >= 0) {
+			gravityVelocity = 0;
+			isJumping = false;
+		} else {
+			this.setLocation(getX(), getY() + gravityVelocity);
+			gravityVelocity += 1;
 		}
 	}
 
@@ -61,20 +70,16 @@ public class Player extends BoundingActor {
 		return Greenfoot.isKeyDown("down") || Greenfoot.isKeyDown("s");
 	}
 
-	public void preventMove(Direction direction) {
-		this.preventMovement = direction;
+	public void setMapMovement(Direction direction) {
+		this.mapMovement = direction;
 	}
 
-	public static int getCenter() {
-		return PLAYER_SIZE / 2;
+	public boolean isTouchingBlock(Direction direction, int tolerance) {
+		return this.isIntersecting(direction, tolerance, Block.class);
 	}
 
-	public boolean isTouchingBlock(Direction direction) {
-		var blocks = this.getObjectsInRange(PLAYER_SIZE, Block.class);
-		for (Block block : blocks) {
-			return this.isIntersecting(direction, block, movementSpeed);
-		}
-		return false;
+	public boolean isAllowedToMove(Direction direction) {
+		return !this.isTouchingBlock(direction, movementSpeed);
 	}
 
 	public int getMovementSpeed() {

@@ -5,38 +5,58 @@ import java.util.ArrayList;
 import org.json.JSONArray;
 
 import greenfoot.Actor;
+import me.leotuet.utils.BoundingActor;
 import me.leotuet.utils.Direction;
 
 public class GameMap extends Actor {
 
-	private static final int VIEWPORT_BLOCK_WIDTH = 16;
-	private static final int VIEWPORT_BLOCK_HEIGHT = 9;
+	public static final int VIEWPORT_BLOCK_WIDTH = 16;
+	public static final int VIEWPORT_BLOCK_HEIGHT = 9;
 
 	private JSONArray mapArray;
 	private Player player;
 	private ArrayList<Block[]> map;
+	private GameMapBackground background;
 
 	public GameMap(JSONArray mapArray, Player player) {
 		this.mapArray = mapArray;
 		this.player = player;
-		this.getImage().scale(getMapWidth(), getMapHeight());
+	}
+
+	public void renderMap() {
+		var world = this.getWorld();
+		this.background = new GameMapBackground(this, 2);
+		world.addObject(this.background, this.getMapWidth(), this.getMapHeight() / 2);
+		this.initialRender();
 	}
 
 	public void act() {
-		player.preventMove(Direction.NONE);
+		player.setMapMovement(Direction.NONE);
 
-		if (shouldMoveMapLeft() && player.isMovingLeft()) {
-			player.preventMove(Direction.LEFT);
+		// move map instead of player
+		if (shouldMoveMapLeft() && player.isMovingLeft() && player.isAllowedToMove(Direction.LEFT)) {
+			player.setMapMovement(Direction.LEFT);
 			moveMap(-player.getMovementSpeed());
+			this.background.move(player.getMovementSpeed());
 		}
 
-		if (shouldMoveMapRight() && player.isMovingRight()) {
-			player.preventMove(Direction.RIGHT);
+		if (shouldMoveMapRight() && player.isMovingRight() && player.isAllowedToMove(Direction.RIGHT)) {
+			player.setMapMovement(Direction.RIGHT);
 			moveMap(player.getMovementSpeed());
+			this.background.move(-player.getMovementSpeed());
+		}
+
+		// prevent player from moving out of bounds
+		if (isActorOnLeftEdge(player, player.getMovementSpeed())) {
+			player.setMapMovement(Direction.LEFT);
+		}
+
+		if (isBoundActorOnRightEdge(player, player.getMovementSpeed())) {
+			player.setMapMovement(Direction.RIGHT);
 		}
 	}
 
-	public void render() {
+	private void initialRender() {
 		map = new ArrayList<Block[]>();
 		// TODO: change to render method which only renders the blocks that are visible
 		for (int columnIndex = 0; columnIndex < this.mapArray.length(); columnIndex++) {
@@ -47,13 +67,12 @@ public class GameMap extends Actor {
 	public void renderColumn(int columnIndex) {
 		var column = mapArray.getJSONArray(columnIndex);
 		var blockColumn = new Block[VIEWPORT_BLOCK_HEIGHT];
+		var world = this.getWorld();
 
 		for (int rowIndex = 0; rowIndex < VIEWPORT_BLOCK_HEIGHT; rowIndex++) {
 			var blockType = column.getInt(rowIndex);
 			if (blockType == 1) {
 				blockColumn[rowIndex] = new Block();
-				var world = this.getWorld();
-
 				world.addObject(blockColumn[rowIndex], getWorldPlacement(columnIndex),
 						getWorldPlacement(rowIndex));
 			}
@@ -75,15 +94,17 @@ public class GameMap extends Actor {
 	}
 
 	public boolean shouldMoveMapRight() {
+		var world = this.getWorld();
 		var block = getNonNullBlock(map.get(map.size() - 1));
-		var isOnEdge = block.getX() <= getMapWidth() - Block.HALF_BLOCK_SIZE;
-		return player.getX() > getMapWidth() - 2 * Block.BLOCK_SIZE && !isOnEdge;
+		// Movement speed needed as tolerance
+		var isEdgeOutOfView = isBoundActorOnRightEdge(block, player.getMovementSpeed());
+		return player.getX() > world.getWidth() / 2 && isEdgeOutOfView;
 	}
 
 	public boolean shouldMoveMapLeft() {
 		var block = getNonNullBlock(map.get(0));
-		var isOnEdge = block.getX() >= Block.HALF_BLOCK_SIZE;
-		return player.getX() < Block.BLOCK_SIZE * 2 && !isOnEdge;
+		var isEdgeOutOfView = isActorOnLeftEdge(block, player.getMovementSpeed());
+		return player.getX() < Block.BLOCK_SIZE * 2 && isEdgeOutOfView;
 	}
 
 	private Block getNonNullBlock(Block[] blocks) {
@@ -103,6 +124,14 @@ public class GameMap extends Actor {
 				}
 			}
 		}
+	}
+
+	public <T extends BoundingActor> boolean isBoundActorOnRightEdge(T actor, int tolerance) {
+		return actor.getX() >= getMapWidth() - actor.getHalfSizeX() / 2 + tolerance;
+	}
+
+	public <T extends BoundingActor> boolean isActorOnLeftEdge(T actor, int tolerance) {
+		return actor.getX() <= actor.getHalfSizeX() - tolerance;
 	}
 
 }

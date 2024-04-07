@@ -11,9 +11,10 @@ public class GameWorld extends World {
 		super(map.getMapWidth(), map.getMapHeight(), 1, false);
 
 		this.addObject(map, map.getMapWidth() / 2, map.getMapHeight() / 2);
+		map.renderMap();
+
 		this.addObject(player, Block.BLOCK_SIZE, Block.BLOCK_SIZE);
 
-		map.render();
 	}
 
 }
