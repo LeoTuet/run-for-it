@@ -7,11 +7,19 @@ import me.leotuet.utils.Direction;
 public class Player extends BoundingActor {
 
 	public static final int PLAYER_SIZE = 128;
+	public static final int DEFAULT_MOVEMENT_SPEED = 10;
+	public static final int MAX_MOVEMENT_SPEED = 25;
+	public static final int JUMP_VELOCITY = 20;
+	public static final int ACCELERATION_TICKS_NEEDED = 5;
+
 	private Direction freeze = Direction.NONE;
 	private int movementSpeed = 20;
 	private int gravityVelocity = 0;
-	private int jumpVelocity = 20;
 	private boolean isJumping = false;
+	private boolean isRunningRight = false;
+	private boolean isRunningLeft = false;
+
+	private int accelerationTickCount = 0;
 
 	public Player() {
 		super(PLAYER_SIZE);
@@ -21,39 +29,6 @@ public class Player extends BoundingActor {
 	public void act() {
 		move();
 		gravity();
-	}
-
-	public void move() {
-		if (isMovingUp()) {
-			if (!isJumping) {
-				isJumping = true;
-				gravityVelocity = -jumpVelocity;
-			}
-		}
-
-		if (isMovingRight()) {
-			if (isAllowedToMove(Direction.RIGHT) && freeze != Direction.RIGHT) {
-				this.setLocation(getX() + movementSpeed, getY());
-			}
-		}
-
-		if (isMovingLeft()) {
-			if (isAllowedToMove(Direction.LEFT) && freeze != Direction.LEFT) {
-				this.setLocation(getX() - movementSpeed, getY());
-			}
-		}
-	}
-
-	public void gravity() {
-		if (this.isTouchingBlock(Direction.BELOW, gravityVelocity) && gravityVelocity >= 0) {
-			gravityVelocity = 0;
-			isJumping = false;
-		} else {
-			if (!this.isTouchingBlock(Direction.ABOVE, gravityVelocity) || gravityVelocity >= 0) {
-				this.setLocation(getX(), getY() + gravityVelocity);
-			}
-			gravityVelocity += 1;
-		}
 	}
 
 	public boolean isMovingLeft() {
@@ -76,15 +51,87 @@ public class Player extends BoundingActor {
 		this.freeze = direction;
 	}
 
-	public boolean isTouchingBlock(Direction direction, int tolerance) {
-		return this.isIntersecting(direction, tolerance, Block.class);
+	public int getMovementSpeed() {
+		return movementSpeed;
 	}
 
 	public boolean isAllowedToMove(Direction direction) {
 		return !this.isTouchingBlock(direction, movementSpeed);
 	}
 
-	public int getMovementSpeed() {
-		return movementSpeed;
+	private boolean isTouchingBlock(Direction direction, int tolerance) {
+		return this.isIntersecting(direction, tolerance, Block.class);
+	}
+
+	private void move() {
+		if (isMovingUp()) {
+			if (!isJumping) {
+				isJumping = true;
+				gravityVelocity = -JUMP_VELOCITY;
+			}
+		}
+
+		if (isMovingRight() && isAllowedToMove(Direction.RIGHT)) {
+			if (isMovingLeft()) {
+				resetMovementSpeed();
+			} else {
+				accelerate();
+				isRunningRight = true;
+				isRunningLeft = false;
+			}
+
+			if (freeze != Direction.RIGHT) {
+				this.setLocation(getX() + movementSpeed, getY());
+			}
+
+		} else if (!isRunningLeft && isRunningRight) {
+			resetMovementSpeed();
+		}
+
+		if (isMovingLeft() && isAllowedToMove(Direction.LEFT)) {
+			if (isMovingRight()) {
+				resetMovementSpeed();
+			} else {
+				accelerate();
+				isRunningRight = false;
+				isRunningLeft = true;
+			}
+
+			if (freeze != Direction.LEFT) {
+				this.setLocation(getX() - movementSpeed, getY());
+			}
+
+		} else if (!isRunningRight && isRunningLeft) {
+			resetMovementSpeed();
+		}
+
+	}
+
+	private void gravity() {
+		if (this.isTouchingBlock(Direction.BELOW, gravityVelocity) && gravityVelocity >= 0) {
+			gravityVelocity = 0;
+			isJumping = false;
+		} else {
+			if (!this.isTouchingBlock(Direction.ABOVE, gravityVelocity) || gravityVelocity >= 0) {
+				this.setLocation(getX(), getY() + gravityVelocity);
+			}
+			gravityVelocity += 1;
+		}
+	}
+
+	private void accelerate() {
+		if (movementSpeed <= MAX_MOVEMENT_SPEED && accelerationTickCount == ACCELERATION_TICKS_NEEDED) {
+			movementSpeed += 1;
+			accelerationTickCount = 0;
+		} else if (movementSpeed != MAX_MOVEMENT_SPEED) {
+			accelerationTickCount++;
+		}
+		System.out.println("movement speed: " + movementSpeed + " accelerationTickCount: " + accelerationTickCount);
+	}
+
+	private void resetMovementSpeed() {
+		movementSpeed = DEFAULT_MOVEMENT_SPEED;
+		isRunningRight = false;
+		isRunningLeft = false;
 	}
 }

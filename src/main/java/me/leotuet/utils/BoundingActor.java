@@ -45,7 +45,6 @@ public class BoundingActor extends Actor {
 
 		// Prevents bugging into objects
 		if (direction == Direction.ABOVE) {
-			System.out.println("bug nach oben");
 			this.setLocation(this.getX(), intersectingActor.getBottom() +
 					this.getHalfSizeY());
 		} else if (direction == Direction.BELOW) {
@@ -71,16 +70,16 @@ public class BoundingActor extends Actor {
 
 		switch (direction) {
 			case ABOVE:
-				crashActor.setSize(this.sizeX, toleranceSize);
+				crashActor.setSize(this.getHalfSizeX(), toleranceSize);
 				world.addObject(crashActor, this.getX(), this.getTop() + tolerance / 2);
 			case BELOW:
-				crashActor.setSize(this.sizeX, toleranceSize);
+				crashActor.setSize(this.getHalfSizeX(), toleranceSize);
 				world.addObject(crashActor, this.getX(), this.getBottom() - tolerance / 2);
 			case LEFT:
-				crashActor.setSize(toleranceSize, this.sizeY);
+				crashActor.setSize(toleranceSize, this.getHalfSizeY());
 				world.addObject(crashActor, this.getLeft() + tolerance / 2, this.getY());
 			case RIGHT:
-				crashActor.setSize(toleranceSize, this.sizeY);
+				crashActor.setSize(toleranceSize, this.getHalfSizeY());
 				world.addObject(crashActor, this.getRight() - tolerance / 2, this.getY());
 			default:
 				break;

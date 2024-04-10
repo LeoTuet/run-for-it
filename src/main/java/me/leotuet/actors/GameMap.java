@@ -56,6 +56,18 @@ public class GameMap extends Actor {
 		}
 	}
 
+	public int getViewportHeight() {
+		return VIEWPORT_BLOCK_HEIGHT * Block.BLOCK_SIZE;
+	}
+
+	public int getViewportWidth() {
+		return VIEWPORT_BLOCK_WIDTH * Block.BLOCK_SIZE;
+	}
+
+	public int getMapWidth() {
+		return map.size() * Block.BLOCK_SIZE;
+	}
+
 	private void loadFullMapArray() {
 		map = new ArrayList<Block[]>();
 		// TODO: change to render method which only renders the blocks that are visible
@@ -64,7 +76,7 @@ public class GameMap extends Actor {
 		}
 	}
 
-	public void renderColumn(int columnIndex) {
+	private void renderColumn(int columnIndex) {
 		var column = mapArray.getJSONArray(columnIndex);
 		var blockColumn = new Block[VIEWPORT_BLOCK_HEIGHT];
 		var world = this.getWorld();
@@ -85,19 +97,7 @@ public class GameMap extends Actor {
 		return index * Block.BLOCK_SIZE + Block.HALF_BLOCK_SIZE;
 	}
 
-	public int getViewportHeight() {
-		return VIEWPORT_BLOCK_HEIGHT * Block.BLOCK_SIZE;
-	}
-
-	public int getViewportWidth() {
-		return VIEWPORT_BLOCK_WIDTH * Block.BLOCK_SIZE;
-	}
-
-	public int getMapWidth() {
-		return map.size() * Block.BLOCK_SIZE;
-	}
-
-	public boolean shouldMoveMapRight() {
+	private boolean shouldMoveMapRight() {
 		var world = this.getWorld();
 		var block = getNonNullBlock(map.get(map.size() - 1));
 		// Movement speed needed as tolerance
@@ -105,7 +105,7 @@ public class GameMap extends Actor {
 		return player.getX() > world.getWidth() / 2 && isEdgeOutOfView;
 	}
 
-	public boolean shouldMoveMapLeft() {
+	private boolean shouldMoveMapLeft() {
 		var block = getNonNullBlock(map.get(0));
 		var isEdgeOutOfView = isActorOnLeftEdge(block, player.getMovementSpeed());
 		return player.getX() < Block.BLOCK_SIZE * 2 && isEdgeOutOfView;
@@ -130,11 +130,11 @@ public class GameMap extends Actor {
 		}
 	}
 
-	public <T extends BoundingActor> boolean isBoundActorOnRightEdge(T actor, int tolerance) {
+	private <T extends BoundingActor> boolean isBoundActorOnRightEdge(T actor, int tolerance) {
 		return actor.getX() >= getViewportWidth() - actor.getHalfSizeX() / 2 + tolerance;
 	}
 
-	public <T extends BoundingActor> boolean isActorOnLeftEdge(T actor, int tolerance) {
+	private <T extends BoundingActor> boolean isActorOnLeftEdge(T actor, int tolerance) {
 		return actor.getX() <= actor.getHalfSizeX() - tolerance;
 	}
 
