@@ -17,28 +17,24 @@ public class BoundingActor extends Actor {
 		this.sizeY = sizeY;
 	}
 
-	public Location getTop() {
-		return new Location(this.getX(), this.getY() - this.getHalfSizeY());
+	public int getTop() {
+		return this.getY() - this.getHalfSizeY();
 	}
 
-	public Location getRight() {
-		return new Location(this.getX() + this.getHalfSizeX(), this.getY());
+	public int getRight() {
+		return this.getX() + this.getHalfSizeX();
 	}
 
-	public Location getLeft() {
-		return new Location(this.getX() - this.getHalfSizeX(), this.getY());
+	public int getBottom() {
+		return this.getY() + this.getHalfSizeY();
 	}
 
-	public Location getBottom() {
-		return new Location(this.getX() + this.getHalfSizeX(), this.getY() + this.getHalfSizeY());
-	}
-
-	public Location getLocation() {
-		return new Location(this.getX(), this.getY());
+	public int getLeft() {
+		return this.getX() - this.getHalfSizeX();
 	}
 
 	public <T extends BoundingActor> boolean isIntersecting(Direction direction, int tolerance, Class<T> collisionActor) {
-		CrashActor crashActor = spawnCrashActor(direction, tolerance);
+		PhantomActor crashActor = spawnCrashActor(direction, tolerance);
 		var intersectingActor = crashActor.getIntersecting(collisionActor);
 		boolean isIntersecting = intersectingActor != null;
 		crashActor.remove();
@@ -49,19 +45,20 @@ public class BoundingActor extends Actor {
 
 		// Prevents bugging into objects
 		if (direction == Direction.ABOVE) {
-			this.setLocation(this.getX(), intersectingActor.getBottom().y +
+			System.out.println("bug nach oben");
+			this.setLocation(this.getX(), intersectingActor.getBottom() +
 					this.getHalfSizeY());
 		} else if (direction == Direction.BELOW) {
-			this.setLocation(this.getX(), intersectingActor.getTop().y -
+			this.setLocation(this.getX(), intersectingActor.getTop() -
 					this.getHalfSizeY());
 		}
 
 		return isIntersecting;
 	}
 
-	private CrashActor spawnCrashActor(Direction direction, int tolerance) {
+	private PhantomActor spawnCrashActor(Direction direction, int tolerance) {
 		var world = this.getWorld();
-		CrashActor crashActor = new CrashActor();
+		PhantomActor crashActor = new PhantomActor();
 		int toleranceSize = tolerance;
 
 		if (toleranceSize <= 0) {
@@ -75,16 +72,16 @@ public class BoundingActor extends Actor {
 		switch (direction) {
 			case ABOVE:
 				crashActor.setSize(this.sizeX, toleranceSize);
-				world.addObject(crashActor, this.getX(), this.getTop().y + tolerance / 2);
+				world.addObject(crashActor, this.getX(), this.getTop() + tolerance / 2);
 			case BELOW:
 				crashActor.setSize(this.sizeX, toleranceSize);
-				world.addObject(crashActor, this.getX(), this.getBottom().y - tolerance / 2);
+				world.addObject(crashActor, this.getX(), this.getBottom() - tolerance / 2);
 			case LEFT:
 				crashActor.setSize(toleranceSize, this.sizeY);
-				world.addObject(crashActor, this.getLeft().x + tolerance / 2, this.getY());
+				world.addObject(crashActor, this.getLeft() + tolerance / 2, this.getY());
 			case RIGHT:
 				crashActor.setSize(toleranceSize, this.sizeY);
-				world.addObject(crashActor, this.getRight().x - tolerance / 2, this.getY());
+				world.addObject(crashActor, this.getRight() - tolerance / 2, this.getY());
 			default:
 				break;
 		}

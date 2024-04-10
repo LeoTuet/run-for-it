@@ -7,8 +7,8 @@ import me.leotuet.utils.Direction;
 public class Player extends BoundingActor {
 
 	public static final int PLAYER_SIZE = 128;
-	private Direction mapMovement = Direction.NONE;
-	private int movementSpeed = 10;
+	private Direction freeze = Direction.NONE;
+	private int movementSpeed = 20;
 	private int gravityVelocity = 0;
 	private int jumpVelocity = 20;
 	private boolean isJumping = false;
@@ -32,13 +32,13 @@ public class Player extends BoundingActor {
 		}
 
 		if (isMovingRight()) {
-			if (isAllowedToMove(Direction.RIGHT) && mapMovement != Direction.RIGHT) {
+			if (isAllowedToMove(Direction.RIGHT) && freeze != Direction.RIGHT) {
 				this.setLocation(getX() + movementSpeed, getY());
 			}
 		}
 
 		if (isMovingLeft()) {
-			if (isAllowedToMove(Direction.LEFT) && mapMovement != Direction.LEFT) {
+			if (isAllowedToMove(Direction.LEFT) && freeze != Direction.LEFT) {
 				this.setLocation(getX() - movementSpeed, getY());
 			}
 		}
@@ -49,7 +49,9 @@ public class Player extends BoundingActor {
 			gravityVelocity = 0;
 			isJumping = false;
 		} else {
-			this.setLocation(getX(), getY() + gravityVelocity);
+			if (!this.isTouchingBlock(Direction.ABOVE, gravityVelocity) || gravityVelocity >= 0) {
+				this.setLocation(getX(), getY() + gravityVelocity);
+			}
 			gravityVelocity += 1;
 		}
 	}
@@ -70,8 +72,8 @@ public class Player extends BoundingActor {
 		return Greenfoot.isKeyDown("down") || Greenfoot.isKeyDown("s");
 	}
 
-	public void setMapMovement(Direction direction) {
-		this.mapMovement = direction;
+	public void setFreeze(Direction direction) {
+		this.freeze = direction;
 	}
 
 	public boolean isTouchingBlock(Direction direction, int tolerance) {

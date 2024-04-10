@@ -1,14 +1,21 @@
 package me.leotuet.utils;
 
 import greenfoot.Actor;
+import greenfoot.GreenfootImage;
 
-public class CrashActor extends Actor {
+public class PhantomActor extends Actor {
 
 	private int width;
 	private int height;
 
-	public CrashActor() {
-		// this.getImage().setTransparency(0);
+	public PhantomActor() {
+		this.getImage().setTransparency(0);
+	}
+
+	public PhantomActor(String backgroundPath, int width, int height) {
+		var image = new GreenfootImage(backgroundPath);
+		this.setImage(image);
+		this.setSize(width, height);
 	}
 
 	public void setSize(int width, int height) {

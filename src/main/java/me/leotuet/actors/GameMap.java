@@ -16,47 +16,47 @@ public class GameMap extends Actor {
 	private JSONArray mapArray;
 	private Player player;
 	private ArrayList<Block[]> map;
-	private GameMapBackground background;
+	private Background background;
 
 	public GameMap(JSONArray mapArray, Player player) {
 		this.mapArray = mapArray;
 		this.player = player;
 	}
 
-	public void renderMap() {
+	public void loadMap() {
 		var world = this.getWorld();
-		this.background = new GameMapBackground(this, 2);
-		world.addObject(this.background, this.getMapWidth(), this.getMapHeight() / 2);
-		this.initialRender();
+		this.loadFullMapArray();
+		this.background = new Background(world, "./images/background.png", this.getViewportWidth() * 2, this.getMapWidth());
+		world.addObject(background, 0, 0);
 	}
 
 	public void act() {
-		player.setMapMovement(Direction.NONE);
+		player.setFreeze(Direction.NONE);
 
 		// move map instead of player
 		if (shouldMoveMapLeft() && player.isMovingLeft() && player.isAllowedToMove(Direction.LEFT)) {
-			player.setMapMovement(Direction.LEFT);
+			player.setFreeze(Direction.LEFT);
 			moveMap(-player.getMovementSpeed());
 			this.background.move(player.getMovementSpeed());
 		}
 
 		if (shouldMoveMapRight() && player.isMovingRight() && player.isAllowedToMove(Direction.RIGHT)) {
-			player.setMapMovement(Direction.RIGHT);
+			player.setFreeze(Direction.RIGHT);
 			moveMap(player.getMovementSpeed());
 			this.background.move(-player.getMovementSpeed());
 		}
 
 		// prevent player from moving out of bounds
 		if (isActorOnLeftEdge(player, player.getMovementSpeed())) {
-			player.setMapMovement(Direction.LEFT);
+			player.setFreeze(Direction.LEFT);
 		}
 
 		if (isBoundActorOnRightEdge(player, player.getMovementSpeed())) {
-			player.setMapMovement(Direction.RIGHT);
+			player.setFreeze(Direction.RIGHT);
 		}
 	}
 
-	private void initialRender() {
+	private void loadFullMapArray() {
 		map = new ArrayList<Block[]>();
 		// TODO: change to render method which only renders the blocks that are visible
 		for (int columnIndex = 0; columnIndex < this.mapArray.length(); columnIndex++) {
@@ -85,12 +85,16 @@ public class GameMap extends Actor {
 		return index * Block.BLOCK_SIZE + Block.HALF_BLOCK_SIZE;
 	}
 
-	public int getMapHeight() {
+	public int getViewportHeight() {
 		return VIEWPORT_BLOCK_HEIGHT * Block.BLOCK_SIZE;
 	}
 
-	public int getMapWidth() {
+	public int getViewportWidth() {
 		return VIEWPORT_BLOCK_WIDTH * Block.BLOCK_SIZE;
+	}
+
+	public int getMapWidth() {
+		return map.size() * Block.BLOCK_SIZE;
 	}
 
 	public boolean shouldMoveMapRight() {
@@ -127,7 +131,7 @@ public class GameMap extends Actor {
 	}
 
 	public <T extends BoundingActor> boolean isBoundActorOnRightEdge(T actor, int tolerance) {
-		return actor.getX() >= getMapWidth() - actor.getHalfSizeX() / 2 + tolerance;
+		return actor.getX() >= getViewportWidth() - actor.getHalfSizeX() / 2 + tolerance;
 	}
 
 	public <T extends BoundingActor> boolean isActorOnLeftEdge(T actor, int tolerance) {
