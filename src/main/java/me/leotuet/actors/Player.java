@@ -12,7 +12,7 @@ public class Player extends BoundingActor {
 	public static final int JUMP_VELOCITY = 20;
 	public static final int ACCELERATION_TICKS_NEEDED = 5;
 
-	private Direction freeze = Direction.NONE;
+	private Direction freezeDirection = Direction.NONE;
 	private int movementSpeed = 20;
 	private int gravityVelocity = 0;
 	private boolean isJumping = false;
@@ -47,8 +47,12 @@ public class Player extends BoundingActor {
 		return Greenfoot.isKeyDown("down") || Greenfoot.isKeyDown("s");
 	}
 
-	public void setFreeze(Direction direction) {
-		this.freeze = direction;
+	public void setFreezeDirection(Direction direction) {
+		this.freezeDirection = direction;
+	}
+
+	public Direction getFreezeDirection() {
+		return this.freezeDirection;
 	}
 
 	public int getMovementSpeed() {
@@ -64,6 +68,10 @@ public class Player extends BoundingActor {
 	}
 
 	private void move() {
+		if (freezeDirection == Direction.ALL) {
+			return;
+		}
+
 		if (isMovingUp()) {
 			if (!isJumping) {
 				isJumping = true;
@@ -80,7 +88,7 @@ public class Player extends BoundingActor {
 				isRunningLeft = false;
 			}
 
-			if (freeze != Direction.RIGHT) {
+			if (freezeDirection != Direction.RIGHT) {
 				this.setLocation(getX() + movementSpeed, getY());
 			}
 
@@ -97,7 +105,7 @@ public class Player extends BoundingActor {
 				isRunningLeft = true;
 			}
 
-			if (freeze != Direction.LEFT) {
+			if (freezeDirection != Direction.LEFT) {
 				this.setLocation(getX() - movementSpeed, getY());
 			}
 
@@ -108,6 +116,10 @@ public class Player extends BoundingActor {
 	}
 
 	private void gravity() {
+		if (freezeDirection == Direction.ALL) {
+			return;
+		}
+
 		if (this.isTouchingBlock(Direction.BELOW, gravityVelocity) && gravityVelocity >= 0) {
 			gravityVelocity = 0;
 			isJumping = false;
@@ -126,7 +138,6 @@ public class Player extends BoundingActor {
 		} else if (movementSpeed != MAX_MOVEMENT_SPEED) {
 			accelerationTickCount++;
 		}
-		System.out.println("movement speed: " + movementSpeed + " accelerationTickCount: " + accelerationTickCount);
 	}
 
 	private void resetMovementSpeed() {

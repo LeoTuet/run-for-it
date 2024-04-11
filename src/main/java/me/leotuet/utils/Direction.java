@@ -1,5 +1,5 @@
 package me.leotuet.utils;
 
 public enum Direction {
-	ABOVE, BELOW, LEFT, RIGHT, NONE
+	ABOVE, BELOW, LEFT, RIGHT, NONE, ALL
 }

@@ -11,6 +11,7 @@ public class Background extends Actor {
 	ArrayList<PhantomActor> phantomActors;
 
 	public Background(World world, String backgroundPath, int backgroundWidth, int totalWidth) {
+		this.getImage().setTransparency(0);
 		phantomActors = new ArrayList<>();
 		for (int i = 0; i <= totalWidth / backgroundWidth; i++) {
 			var phantomActor = new PhantomActor(backgroundPath, backgroundWidth, world.getHeight());

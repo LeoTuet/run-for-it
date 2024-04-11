@@ -1,6 +1,7 @@
 package me.leotuet.utils;
 
 import greenfoot.Actor;
+import greenfoot.Color;
 import greenfoot.GreenfootImage;
 
 public class PhantomActor extends Actor {
@@ -8,8 +9,15 @@ public class PhantomActor extends Actor {
 	private int width;
 	private int height;
 
+	public void act() {
+	};
+
 	public PhantomActor() {
 		this.getImage().setTransparency(0);
+	}
+
+	public PhantomActor(String text) {
+		this.setImage(new GreenfootImage(text, 20, Color.GRAY, new Color(0, 0, 0, 0)));
 	}
 
 	public PhantomActor(String backgroundPath, int width, int height) {
