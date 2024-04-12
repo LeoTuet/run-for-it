@@ -17,7 +17,7 @@ public class GameWorld extends World {
 		this.addObject(background, 0, 0);
 		map.setBackground(background);
 
-		this.addObject(player, BLOCK_SIZE, BLOCK_SIZE);
+		this.addObject(player, BLOCK_SIZE, this.getHeight() - BLOCK_SIZE - player.getHalfSizeY());
 		this.addObject(map, map.getViewportWidth() / 2, map.getViewportHeight() / 2);
 
 		var GameControl = new GameControl(player);

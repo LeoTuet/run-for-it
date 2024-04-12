@@ -33,6 +33,14 @@ public class BoundingActor extends Actor {
 		return this.getX() - this.getHalfSizeX();
 	}
 
+	public int getHalfSizeX() {
+		return sizeX / 2;
+	}
+
+	public int getHalfSizeY() {
+		return sizeY / 2;
+	}
+
 	public <T extends BoundingActor> boolean isIntersecting(Direction direction, int tolerance, Class<T> collisionActor) {
 		PhantomActor crashActor = spawnCrashActor(direction, tolerance);
 		var intersectingActor = crashActor.getIntersecting(collisionActor);
@@ -53,6 +61,10 @@ public class BoundingActor extends Actor {
 		}
 
 		return isIntersecting;
+	}
+
+	public boolean isTouching(Class<?> actor) {
+		return super.isTouching(actor);
 	}
 
 	private PhantomActor spawnCrashActor(Direction direction, int tolerance) {
@@ -87,14 +99,6 @@ public class BoundingActor extends Actor {
 
 		return crashActor;
 
-	}
-
-	public int getHalfSizeX() {
-		return sizeX / 2;
-	}
-
-	public int getHalfSizeY() {
-		return sizeY / 2;
 	}
 
 }

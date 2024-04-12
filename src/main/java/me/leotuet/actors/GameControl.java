@@ -36,7 +36,7 @@ public class GameControl extends Actor {
 	}
 
 	private void handleGameOver() {
-		if (player.getY() >= this.getWorld().getHeight() + player.getHalfSizeY()) {
+		if (player.getY() >= this.getWorld().getHeight() + player.getHalfSizeY() || player.isTouching(Enemy.class)) {
 			var gameOverScreen = this.openMenu("./images/game-over.png");
 			this.createRestartButton(gameOverScreen, 50);
 		}

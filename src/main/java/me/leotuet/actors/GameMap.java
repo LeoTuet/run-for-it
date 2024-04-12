@@ -98,6 +98,10 @@ public class GameMap extends Actor {
 				blockColumn[rowIndex] = new Gate();
 				world.addObject(blockColumn[rowIndex], getWorldPlacement(columnIndex),
 						getWorldPlacement(rowIndex));
+			} else if (blockType == 3) {
+				blockColumn[rowIndex] = new Enemy();
+				world.addObject(blockColumn[rowIndex], getWorldPlacement(columnIndex),
+						getWorldPlacement(rowIndex));
 			}
 
 		}
@@ -134,9 +138,9 @@ public class GameMap extends Actor {
 
 	private void moveMap(int direction) {
 		for (var column : map) {
-			for (var block : column) {
-				if (block != null) {
-					block.setLocation(block.getX() - direction, block.getY());
+			for (var actor : column) {
+				if (actor != null) {
+					actor.setLocation(actor.getX() - direction, actor.getY());
 				}
 			}
 		}
