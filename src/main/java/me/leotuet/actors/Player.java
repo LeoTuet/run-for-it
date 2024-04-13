@@ -1,6 +1,8 @@
 package me.leotuet.actors;
 
 import greenfoot.Greenfoot;
+import greenfoot.core.WorldHandler;
+import javafx.scene.input.KeyCode;
 import me.leotuet.utils.Entity;
 
 public class Player extends Entity {
@@ -10,6 +12,10 @@ public class Player extends Entity {
 	public static final int MAX_MOVEMENT_SPEED = 20;
 	public static final int JUMP_VELOCITY = 20;
 	public static final int ACCELERATION_TICKS_NEEDED = 5;
+	public static final int POWER_UP_DURATION = 500;
+
+	private int powerUpTicks = 0;
+	private boolean superPowerEnabled = false;
 
 	public Player() {
 		super(PLAYER_SIZE / 2, PLAYER_SIZE, DEFAULT_MOVEMENT_SPEED, MAX_MOVEMENT_SPEED, JUMP_VELOCITY);
@@ -17,6 +23,8 @@ public class Player extends Entity {
 
 	public void act() {
 		super.act();
+		handlePowerUp();
+		handleSuperPower();
 	}
 
 	@Override
@@ -34,4 +42,31 @@ public class Player extends Entity {
 		return Greenfoot.isKeyDown("up") || Greenfoot.isKeyDown("w") || Greenfoot.isKeyDown("space");
 	}
 
+	public boolean isUsingSpecial() {
+		var isShiftPressed = Greenfoot.isKeyDown("shift");
+		WorldHandler.getInstance().getKeyboardManager().keyReleased(KeyCode.SHIFT, "shift");
+		return isShiftPressed;
+	}
+
+	private void handlePowerUp() {
+		var powerUp = getOneIntersectingObject(PowerUp.class);
+
+		if (powerUp != null) {
+			powerUpTicks = POWER_UP_DURATION;
+			superPowerEnabled = true;
+			getWorld().removeObject(powerUp);
+		}
+
+		if (powerUpTicks > 0) {
+			powerUpTicks--;
+		} else {
+			superPowerEnabled = false;
+		}
+	}
+
+	private void handleSuperPower() {
+		if (superPowerEnabled && isUsingSpecial()) {
+			System.out.println("fireball");
+		}
+	}
 }

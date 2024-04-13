@@ -22,7 +22,6 @@ public abstract class Entity extends BoundingActor {
 
 	public Entity(int width, int height, int defaultMovementSpeed, int maxMovementSpeed, int jumpVelocity) {
 		super(width, height);
-		this.getImage().scale(width, height);
 		this.defaultMovementSpeed = defaultMovementSpeed;
 		this.movementSpeed = defaultMovementSpeed;
 		this.maxMovementSpeed = maxMovementSpeed;
@@ -129,7 +128,6 @@ public abstract class Entity extends BoundingActor {
 	private void accelerate() {
 		if (movementSpeed <= this.maxMovementSpeed && accelerationTickCount == ACCELERATION_TICKS_NEEDED) {
 			movementSpeed += 1;
-			System.out.println("Speed: " + movementSpeed);
 			accelerationTickCount = 0;
 		} else if (movementSpeed != this.maxMovementSpeed) {
 			accelerationTickCount++;

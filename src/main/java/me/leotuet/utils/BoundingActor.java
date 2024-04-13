@@ -10,11 +10,14 @@ public class BoundingActor extends Actor {
 	public BoundingActor(int size) {
 		this.sizeX = size;
 		this.sizeY = size;
+		this.getImage().scale(size, size);
+
 	}
 
 	public BoundingActor(int sizeX, int sizeY) {
 		this.sizeX = sizeX;
 		this.sizeY = sizeY;
+		this.getImage().scale(sizeX, sizeY);
 	}
 
 	public int getTop() {

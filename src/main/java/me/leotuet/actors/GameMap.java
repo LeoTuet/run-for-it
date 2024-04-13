@@ -90,16 +90,23 @@ public class GameMap extends Actor {
 
 		for (int rowIndex = 0; rowIndex < VIEWPORT_BLOCK_HEIGHT; rowIndex++) {
 			var blockType = column.getInt(rowIndex);
-			if (blockType == 1) {
-				blockColumn[rowIndex] = new Block();
-				world.addObject(blockColumn[rowIndex], getWorldPlacement(columnIndex),
-						getWorldPlacement(rowIndex));
-			} else if (blockType == 2) {
-				blockColumn[rowIndex] = new Gate();
-				world.addObject(blockColumn[rowIndex], getWorldPlacement(columnIndex),
-						getWorldPlacement(rowIndex));
-			} else if (blockType == 3) {
-				blockColumn[rowIndex] = new Enemy();
+
+			switch (blockType) {
+				case 1:
+					blockColumn[rowIndex] = new Block();
+					break;
+				case 2:
+					blockColumn[rowIndex] = new Gate();
+					break;
+				case 3:
+					blockColumn[rowIndex] = new Enemy();
+					break;
+				case 4:
+					blockColumn[rowIndex] = new PowerUp();
+					break;
+			}
+
+			if (blockColumn[rowIndex] != null) {
 				world.addObject(blockColumn[rowIndex], getWorldPlacement(columnIndex),
 						getWorldPlacement(rowIndex));
 			}
@@ -139,7 +146,7 @@ public class GameMap extends Actor {
 	private void moveMap(int direction) {
 		for (var column : map) {
 			for (var actor : column) {
-				if (actor != null) {
+				if (actor != null && actor.getWorld() != null) {
 					actor.setLocation(actor.getX() - direction, actor.getY());
 				}
 			}

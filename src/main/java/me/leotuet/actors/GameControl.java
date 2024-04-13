@@ -20,7 +20,7 @@ public class GameControl extends Actor {
 	public void act() {
 		handleGameOver();
 		handleWin();
-		if (Greenfoot.isKeyDown("escape") || Greenfoot.isKeyDown("h")) {
+		if (Greenfoot.isKeyDown("escape")) {
 			if (!isMenuOpen) {
 				openControlMenu();
 			}
