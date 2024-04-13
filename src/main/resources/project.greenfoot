@@ -4,7 +4,9 @@ class.me.leotuet.actors.Player.image=bean.png
 class.me.leotuet.actors.Block.image=grass-block.png
 class.me.leotuet.actors.GameMapBackground.image=background.png
 class.me.leotuet.actors.Enemy.image=black.png
-class.me.leotuet.actors.PowerUp.image=black.png
+class.me.leotuet.actors.PowerUp.image=power-up.png
+class.me.leotuet.actors.Fireball.image=fireball.png
+class.me.leotuet.actors.Enemy.image=enemy.png
 
 # Editor Settings
 editor.fx.0.height=0

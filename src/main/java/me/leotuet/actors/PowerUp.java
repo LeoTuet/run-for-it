@@ -6,7 +6,7 @@ import me.leotuet.worlds.GameWorld;
 public class PowerUp extends BoundingActor {
 
 	public PowerUp() {
-		super(GameWorld.BLOCK_SIZE, GameWorld.BLOCK_SIZE);
+		super(GameWorld.HALF_BLOCK_SIZE, GameWorld.BLOCK_SIZE);
 	}
 
 }

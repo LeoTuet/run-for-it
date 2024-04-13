@@ -19,6 +19,7 @@ public abstract class Entity extends BoundingActor {
 	private boolean isMovingRight = false;
 	private boolean isMovingLeft = false;
 	private boolean isInitialMovement = true;
+	private boolean isFacingRight = true;
 
 	public Entity(int width, int height, int defaultMovementSpeed, int maxMovementSpeed, int jumpVelocity) {
 		super(width, height);
@@ -55,6 +56,11 @@ public abstract class Entity extends BoundingActor {
 
 	public boolean isAllowedToMove(Direction direction) {
 		return !this.isTouchingBlock(direction, movementSpeed);
+	}
+
+	public boolean isFacingRight() {
+		return isFacingRight;
+
 	}
 
 	private boolean isTouchingBlock(Direction direction, int tolerance) {
@@ -147,6 +153,7 @@ public abstract class Entity extends BoundingActor {
 
 		if ((isMovingLeft() && !isMovingLeft) || (isMovingRight() && !isMovingRight && !isInitialMovement)) {
 			this.isInitialMovement = false;
+			isFacingRight = !isFacingRight;
 			this.getImage().mirrorHorizontally();
 		}
 	}

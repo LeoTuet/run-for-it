@@ -60,7 +60,13 @@ public class Player extends Entity {
 
 	private void handleSuperPower() {
 		if (superPowerEnabled && KeyHelper.isKeyPressedDown(KeyCode.SHIFT, "shift")) {
-			System.out.println("fireball");
+			if (this.isFacingRight()) {
+				var fireBall = new Fireball(5);
+				getWorld().addObject(fireBall, getX(), getY());
+			} else {
+				var fireBall = new Fireball(-5);
+				getWorld().addObject(fireBall, getX(), getY());
+			}
 		}
 	}
 
