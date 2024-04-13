@@ -2,15 +2,18 @@ package me.leotuet.actors;
 
 import greenfoot.Actor;
 import greenfoot.Greenfoot;
+import javafx.scene.input.KeyCode;
 import me.leotuet.utils.MapParser;
-import me.leotuet.utils.PhantomActor;
 import me.leotuet.utils.Button;
 import me.leotuet.utils.Direction;
+import me.leotuet.utils.KeyHelper;
+import me.leotuet.utils.Menu;
 import me.leotuet.worlds.GameWorld;
 
 public class GameControl extends Actor {
 	private boolean isMenuOpen = false;
 	private Player player;
+	private Menu controlMenu;
 
 	public GameControl(Player player) {
 		this.getImage().setTransparency(0);
@@ -20,9 +23,11 @@ public class GameControl extends Actor {
 	public void act() {
 		handleGameOver();
 		handleWin();
-		if (Greenfoot.isKeyDown("escape")) {
+		if (KeyHelper.isKeyPressedDown(KeyCode.ESCAPE, "escape")) {
 			if (!isMenuOpen) {
 				openControlMenu();
+			} else {
+				closeMenu(controlMenu);
 			}
 		}
 
@@ -37,57 +42,48 @@ public class GameControl extends Actor {
 
 	private void handleGameOver() {
 		if (player.getY() >= this.getWorld().getHeight() + player.getHalfSizeY() || player.isTouching(Enemy.class)) {
-			var gameOverScreen = this.openMenu("./images/game-over.png");
-			this.createRestartButton(gameOverScreen, 50);
+			var gameOverScreen = new Menu("./images/game-over.png", this.createRestartButton());
+			this.openMenu(gameOverScreen, 50);
 		}
 	}
 
 	private void handleWin() {
 		if (player.isIntersecting(Direction.RIGHT, player.getMovementSpeed(), Gate.class)) {
-			var winMenu = this.openMenu("./images/win.png");
-			this.createRestartButton(winMenu, 0);
+			var winMenu = new Menu("./images/win.png", this.createRestartButton());
+			this.openMenu(winMenu, 0);
 		}
 	}
 
 	private void openControlMenu() {
-		var controlMenu = this.openMenu("./images/menu.png");
-		var restartButton = this.createRestartButton(controlMenu, 0);
-		var cancelButton = new Button() {
+		var restartButton = this.createRestartButton();
+		this.controlMenu = new Menu("./images/menu.png", restartButton);
+		var cancelButton = new Button("Cancel") {
 			public void onClick() {
-				closeMenu(controlMenu, restartButton, this);
+				closeMenu(controlMenu);
 			}
 		};
-		this.getWorld().addObject(cancelButton, controlMenu.getX(), controlMenu.getY() + 100);
-		cancelButton.setText("Cancel");
+		controlMenu.addButton(cancelButton);
+		this.openMenu(this.controlMenu, 0);
 	}
 
-	private void closeMenu(PhantomActor menu, Button... buttons) {
+	private void closeMenu(Menu menu) {
 		isMenuOpen = false;
-		menu.remove();
-		for (var button : buttons) {
-			button.remove();
-		}
 		this.player.setFreezeDirection(Direction.NONE);
+		menu.closeMenu();
 	}
 
-	private PhantomActor openMenu(String backgroundPath) {
+	private void openMenu(Menu menu, int offset) {
 		isMenuOpen = true;
 		this.player.setFreezeDirection(Direction.ALL);
-		var world = this.getWorld();
-		var menu = new PhantomActor(backgroundPath, 350, 480);
-		this.getWorld().addObject(menu, world.getWidth() / 2, world.getHeight() / 2);
-		return menu;
+		menu.openMenu(this.getWorld(), offset);
 	}
 
-	private Button createRestartButton(PhantomActor menu, int offset) {
-		var resetButton = new Button() {
+	private Button createRestartButton() {
+		return new Button("Restart") {
 			public void onClick() {
 				resetWorld();
 			}
 		};
-		this.getWorld().addObject(resetButton, menu.getX(), menu.getY() + offset);
-		resetButton.setText("Restart");
-		return resetButton;
 	}
 
 	private void resetWorld() {
@@ -101,4 +97,5 @@ public class GameControl extends Actor {
 			e.printStackTrace();
 		}
 	}
+
 }

@@ -3,39 +3,47 @@ package me.leotuet.utils;
 import greenfoot.Actor;
 import greenfoot.Greenfoot;
 import greenfoot.GreenfootImage;
+import greenfoot.World;
 
 public abstract class Button extends Actor {
-	PhantomActor text;
+	PhantomActor textActor;
+	String text;
 
 	public abstract void onClick();
 
-	public Button() {
+	public Button(String text) {
 		var image = new GreenfootImage("./images/button.png");
 		image.scale(192, 64);
 		this.setImage(image);
+		this.text = text;
 	}
 
 	public void act() {
 		handleClick(this);
 	}
 
-	public void setText(String label) {
-		if (this.text != null) {
-			this.text.remove();
+	public void addToWorld(World world, int x, int y) {
+		world.addObject(this, x, y);
+		this.setTextActor(this.text);
+	}
+
+	public void setTextActor(String text) {
+		if (this.textActor != null) {
+			this.textActor.remove();
 		}
 
-		this.text = new PhantomActor(label) {
+		this.textActor = new PhantomActor(text) {
 			@Override
 			public void act() {
 				handleClick(this);
 			}
 		};
-		this.text.setSize(150, 40);
-		this.getWorld().addObject(text, this.getX(), this.getY());
+		this.textActor.setSize(150, 40);
+		this.getWorld().addObject(textActor, this.getX(), this.getY());
 	}
 
 	public void remove() {
-		this.text.remove();
+		this.textActor.remove();
 		this.getWorld().removeObject(this);
 	}
 

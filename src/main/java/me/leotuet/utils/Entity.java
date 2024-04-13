@@ -141,6 +141,10 @@ public abstract class Entity extends BoundingActor {
 	}
 
 	private void handleImageDirection() {
+		if (this.getFreezeDirection() == Direction.ALL) {
+			return;
+		}
+
 		if ((isMovingLeft() && !isMovingLeft) || (isMovingRight() && !isMovingRight && !isInitialMovement)) {
 			this.isInitialMovement = false;
 			this.getImage().mirrorHorizontally();

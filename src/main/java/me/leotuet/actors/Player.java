@@ -1,9 +1,9 @@
 package me.leotuet.actors;
 
 import greenfoot.Greenfoot;
-import greenfoot.core.WorldHandler;
 import javafx.scene.input.KeyCode;
 import me.leotuet.utils.Entity;
+import me.leotuet.utils.KeyHelper;
 
 public class Player extends Entity {
 
@@ -42,12 +42,6 @@ public class Player extends Entity {
 		return Greenfoot.isKeyDown("up") || Greenfoot.isKeyDown("w") || Greenfoot.isKeyDown("space");
 	}
 
-	public boolean isUsingSpecial() {
-		var isShiftPressed = Greenfoot.isKeyDown("shift");
-		WorldHandler.getInstance().getKeyboardManager().keyReleased(KeyCode.SHIFT, "shift");
-		return isShiftPressed;
-	}
-
 	private void handlePowerUp() {
 		var powerUp = getOneIntersectingObject(PowerUp.class);
 
@@ -65,8 +59,9 @@ public class Player extends Entity {
 	}
 
 	private void handleSuperPower() {
-		if (superPowerEnabled && isUsingSpecial()) {
+		if (superPowerEnabled && KeyHelper.isKeyPressedDown(KeyCode.SHIFT, "shift")) {
 			System.out.println("fireball");
 		}
 	}
+
 }
