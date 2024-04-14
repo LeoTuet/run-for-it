@@ -27,7 +27,7 @@ public abstract class Button extends Actor {
 		this.setTextActor(this.text);
 	}
 
-	public void setTextActor(String text) {
+	private void setTextActor(String text) {
 		if (this.textActor != null) {
 			this.textActor.remove();
 		}

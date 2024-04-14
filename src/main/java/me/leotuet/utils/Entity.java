@@ -27,7 +27,6 @@ public abstract class Entity extends BoundingActor {
 		this.movementSpeed = defaultMovementSpeed;
 		this.maxMovementSpeed = maxMovementSpeed;
 		this.jumpVelocity = jumpVelocity;
-
 	}
 
 	public void act() {

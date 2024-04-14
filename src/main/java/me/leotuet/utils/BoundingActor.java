@@ -44,6 +44,8 @@ public class BoundingActor extends Actor {
 		return sizeY / 2;
 	}
 
+
+
 	public <T extends BoundingActor> boolean isIntersecting(Direction direction, int tolerance, Class<T> collisionActor) {
 		PhantomActor crashActor = spawnCrashActor(direction, tolerance);
 		var intersectingActor = crashActor.getIntersecting(collisionActor);
