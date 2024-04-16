@@ -72,7 +72,7 @@ public abstract class Entity extends BoundingActor {
 		}
 
 		if (isMovingUp()) {
-			if (!isJumping) {
+			if (!isJumping && this.gravityVelocity == 0) {
 				isJumping = true;
 				gravityVelocity = -this.jumpVelocity;
 			}

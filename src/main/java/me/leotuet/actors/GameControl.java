@@ -26,8 +26,8 @@ public class GameControl extends Actor {
 		if (KeyHelper.isKeyPressedDown(KeyCode.ESCAPE, "escape")) {
 			if (!isMenuOpen) {
 				openControlMenu();
-			} else {
-				closeMenu(controlMenu);
+			} else if (this.controlMenu != null) {
+				closeMenu(this.controlMenu);
 			}
 		}
 
