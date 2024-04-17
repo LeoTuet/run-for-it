@@ -11,6 +11,7 @@ public class Enemy extends Entity {
 
 	public Enemy() {
 		super(64, 64, MOVEMENT_SPEED, MOVEMENT_SPEED, 0);
+		this.getImage().mirrorHorizontally();
 	}
 
 	@Override

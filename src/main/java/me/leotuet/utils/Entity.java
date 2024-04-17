@@ -150,7 +150,7 @@ public abstract class Entity extends BoundingActor {
 			return;
 		}
 
-		if ((isMovingLeft() && !isMovingLeft) || (isMovingRight() && !isMovingRight && !isInitialMovement)) {
+		if ((isMovingLeft() && isFacingRight) || (isMovingRight() && !isFacingRight && !isInitialMovement)) {
 			this.isInitialMovement = false;
 			isFacingRight = !isFacingRight;
 			this.getImage().mirrorHorizontally();
