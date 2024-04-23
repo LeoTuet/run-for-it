@@ -1,11 +1,9 @@
 package me.leotuet;
 
-import polyfill.GreenfootScenarioApplication;
+import polyfill.GreenfootApplication;
 
-public class Main extends GreenfootScenarioApplication {
-
-    public static void main(String[] args) {
-        launch(args);
-    }
-
+public class Main {
+	public static void main(String[] args) {
+		GreenfootApplication.main(args);
+	}
 }

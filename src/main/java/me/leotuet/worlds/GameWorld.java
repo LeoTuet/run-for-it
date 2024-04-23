@@ -13,7 +13,7 @@ public class GameWorld extends World {
 
 	public GameWorld(GameMap map, Player player) {
 		super(map.getViewportWidth(), map.getViewportHeight(), 1, false);
-		var background = new Background(this, "./images/background.png", map.getViewportWidth() * 2, map.getMapWidth());
+		var background = new Background(this, "images/background.png", map.getViewportWidth() * 2, map.getMapWidth());
 		this.addObject(background, 0, 0);
 		map.setBackground(background);
 

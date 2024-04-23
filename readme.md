@@ -51,4 +51,18 @@ As soon as the project is Running go to the Debug tab in the `Activity Bar` and 
 
 ## Update Greenfoot Version
 
-To update the Greenfoot version you just need to swap out the `greenfoot.jar` and `bluej.jar` in the `lib` folder. After that you should update the `pom.xml` to the new version.
+To update the Greenfoot version you need to download the newest version from `greenfoot.jar` and `bluej.jar` from the official release and then run:
+
+```bash
+mvn org.apache.maven.plugins:maven-install-plugin:2.3.1:install-file -Dfile="D:\projects\run-for-it\greenfoot.jar" -DgroupId="libs.org.greenfoot" -DartifactId="greenfoot" -Dversion="3.8.2" -Dpackaging="jar" -DlocalRepositoryPath="D:\projects\run-for-it" -DgeneratePom=true
+
+mvn org.apache.maven.plugins:maven-install-plugin:2.3.1:install-file -Dfile="D:\projects\run-for-it\bluej.jar" -DgroupId="libs.org.bluej" -DartifactId="bluej" -Dversion="3.8.2" -Dpackaging="jar" -DlocalRepositoryPath="D:\projects\run-for-it" -DgeneratePom=true
+```
+
+Where `-Dfile` is the path to the downloaded jar file and `-Dversion` is the new version. `-DlocalRepositoryPath` is the path to the local repository.
+
+After that you just need to update the versions in the `pom.xml` to the new ones and run
+
+```bash
+mvn clean install
+```

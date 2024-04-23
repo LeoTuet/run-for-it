@@ -9,7 +9,7 @@ import me.leotuet.utils.MapParser;
 public class StartScreen extends World {
 
 	public StartScreen() {
-		super(0, 0, 0);
+		super(1, 1, 1);
 
 		try {
 			var player = new Player();

@@ -9,27 +9,30 @@
     <version>1.0-SNAPSHOT</version>
 
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
+        <maven.compiler.source>19</maven.compiler.source>
+        <maven.compiler.target>19</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <repositories>
+        <repository>
+            <id>greenfoot</id>
+            <url>file://${basedir}</url>
+        </repository>
+    </repositories>
 
 
     <dependencies>
         <!-- local greenfoot dependencies -->
         <dependency>
-            <groupId>org.greenfoot</groupId>
+            <groupId>libs.org.greenfoot</groupId>
             <artifactId>greenfoot</artifactId>
             <version>3.8.2</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/libs/greenfoot.jar</systemPath>
         </dependency>
         <dependency>
-            <groupId>org.bluej</groupId>
+            <groupId>libs.org.bluej</groupId>
             <artifactId>bluej</artifactId>
             <version>3.8.2</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/libs/bluej.jar</systemPath>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.openjfx/javafx -->
@@ -68,7 +71,32 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <transformers>
+                                <transformer
+                                    implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>me.leotuet.Main</mainClass>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
     </build>
 
 

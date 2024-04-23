@@ -12,7 +12,7 @@ public abstract class Button extends Actor {
 	public abstract void onClick();
 
 	public Button(String text) {
-		var image = new GreenfootImage("./images/button.png");
+		var image = new GreenfootImage("images/button.png");
 		image.scale(192, 64);
 		this.setImage(image);
 		this.text = text;

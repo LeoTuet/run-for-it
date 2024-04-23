@@ -1,9 +1,9 @@
 package me.leotuet.utils;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.charset.StandardCharsets;
 
 import org.json.JSONArray;
 
@@ -13,9 +13,10 @@ public class MapParser {
 	}
 
 	public JSONArray parseDefaultMap() throws IOException, URISyntaxException {
-		var url = MapParser.class.getClassLoader().getResource("maps/default.json");
-		var content = Files.readString(Paths.get(url.toURI())).trim();
-		return new JSONArray(content);
+		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
+		InputStream is = classloader.getResourceAsStream("maps/default.json");
+		String text = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+		return new JSONArray(text);
 	}
 
 }

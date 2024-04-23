@@ -42,21 +42,21 @@ public class GameControl extends Actor {
 
 	private void handleGameOver() {
 		if (player.getY() >= this.getWorld().getHeight() + player.getHalfSizeY() || player.isTouching(Enemy.class)) {
-			var gameOverScreen = new Menu("./images/game-over.png", this.createRestartButton());
+			var gameOverScreen = new Menu("images/game-over.png", this.createRestartButton());
 			this.openMenu(gameOverScreen, 50);
 		}
 	}
 
 	private void handleWin() {
 		if (player.isIntersecting(Direction.RIGHT, player.getMovementSpeed(), Gate.class)) {
-			var winMenu = new Menu("./images/win.png", this.createRestartButton());
+			var winMenu = new Menu("images/win.png", this.createRestartButton());
 			this.openMenu(winMenu, 0);
 		}
 	}
 
 	private void openControlMenu() {
 		var restartButton = this.createRestartButton();
-		this.controlMenu = new Menu("./images/menu.png", restartButton);
+		this.controlMenu = new Menu("images/menu.png", restartButton);
 		var cancelButton = new Button("Cancel") {
 			public void onClick() {
 				closeMenu(controlMenu);
